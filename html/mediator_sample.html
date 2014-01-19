@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mediator Sample</title>
+<link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="../js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/mediator_sample.js"></script>
+<script type="text/javascript">
+    var gameItemsJson = [ {
+        id : 0,
+        name : "ひのきのぼう",
+        price : 5
+    }, {
+        id : 1,
+        name : "やくそう",
+        price : 8
+    }, {
+        id : 2,
+        name : "どくけしそう",
+        price : 10
+    }, {
+        id : 3,
+        name : "せいすい",
+        price : 20
+    }, {
+        id : 4,
+        name : "キメラのつばさ",
+        price : 25
+    }, ];
+    $(function() {
+        console.log("init");
+        for (var i = 0; i < gameItemsJson.length; i++) {
+            ApologyControl.addOption(gameItemsJson[i]);
+        }
+        $('#btnAddItem').click(ApologyMediator.addGameItem)
+    });
+
+    var ApologyMediator = {
+            addGameItem: function() {
+                var gameItemId = $('#items').val();
+                var gameItemJson = ApologyMediator.searchGameItemJson(gameItemId);
+                if (!gameItemJson) {
+                    return;
+                }
+                ApologyControl.addRecord(gameItemJson);
+                ApologyControl.delOption(gameItemJson);
+            },
+            delRow: function(btn, gameItemId) {
+                $(btn).parents('tr').remove();
+                var gameItemJson = ApologyMediator.searchGameItemJson(gameItemId);
+                if (!gameItemJson) {
+                    return;
+                }
+                ApologyControl.addOption(gameItemJson);
+            },
+            searchGameItemJson: function(gameItemId) {
+                console.log("search gameItemId[" + gameItemId + "]");
+                for (var i = 0; i < gameItemsJson.length; i++) {
+                    if (gameItemsJson[i].id == gameItemId) {
+                        return gameItemsJson[i];
+                    }
+                }
+                return null;
+            }
+    };
+    var ApologyControl = {
+        addRecord: function(gameItemJson) {
+	        $('#tbl').append(
+	                '<tr>'
+	                + '<td>' + gameItemJson.id
+	                + '<td>' + gameItemJson.name
+	                + '<td>' + gameItemJson.price
+	                + '<td>' + '<input type="text" value="1" />'
+	                + '<td>' + '<input type="button" value="削除" onclick="ApologyMediator.delRow(this, ' + gameItemJson.id + ');" />');
+	    },
+	    delRecord: function(gameItemJson) {
+	        // TODO
+	    },
+	    addOption: function(gameItemJson) {
+	        $('#items').append($('<option>').html(gameItemJson.name).val(gameItemJson.id));
+	    },
+	    delOption: function(gameItemJson) {
+	        var options = $('#items option');
+	        var optionsLength = options.length;
+	        for (var i = 0; i < optionsLength; i++) {
+	            if ($(options[i]).val() == gameItemJson.id) {
+	                $('#items option[value=' + gameItemJson.id+ ']').remove();
+	                return;
+	            }
+	        }
+	    },
+    };
+</script>
+<style type="text/css">
+.container {
+	max-width: none !important;
+	width: 970px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<h1>JavaScript</h1>
+		<div class="row">
+			<div class="col-md-3">
+				<h2>Menu</h2>
+				<div id="menu">
+					<div>
+						<div class="panel-group" id="accordion">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#mediator">Mediator</a>
+									</h4>
+								</div>
+								<div id="mediator" class="panel-collapse collapse">
+									<div class="panel-body">
+										<a href="#" id="mediator_sample" class="menuLink">mediator_sample</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="panel-group" id="accordion">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#hoge">hoge</a>
+									</h4>
+								</div>
+								<div id="hoge" class="panel-collapse collapse">
+									<div class="panel-body">Anim pariatur cliche
+										reprehenderit, enim eiusmod high life accusamus terry
+										richardson ad squid. 3 wolf moon officia aute, non cupidatat
+										skateboard dolor brunch. Food truck quinoa nesciunt laborum
+										eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on
+										it squid single-origin coffee nulla assumenda shoreditch et.
+										Nihil anim keffiyeh helvetica, craft beer labore wes anderson
+										cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
+										vice lomo. Leggings occaecat craft beer farm-to-table, raw
+										denim aesthetic synth nesciunt you probably haven't heard of
+										them accusamus labore sustainable VHS.</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div id="content">
+					<table class="table" id="tbl">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>アイテム名</th>
+                                <th>価格</th>
+                                <th>個数</th>
+								<th>&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<select id="items" class="form-control">
+					</select>
+					<button id="btnAddItem" type="button" class="btn btn-primary">Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
